@@ -113,7 +113,7 @@ div.tutor {
 }
 
 div.tutor::before {
-  content: "💡 Tutor";
+  content: "💡 Tutoriál";
   display: block;
   font-weight: bold;
   color: #0a84ff;
@@ -145,7 +145,7 @@ div.tip::before {
 }
 
 /* ------------------ Warning Block ------------------ */
-div.warning {
+div.warn {
   background-color: #2f1e1e;
   color: #ffdcdc;
   border-left: 4px solid #ff4c4c;
@@ -158,8 +158,8 @@ div.warning {
   position: relative;
 }
 
-div.warning::before {
-  content: "⚠ Warning";
+div.warn::before {
+  content: "⚠ Varování";
   display: block;
   font-weight: bold;
   color: #ff4c4c;
