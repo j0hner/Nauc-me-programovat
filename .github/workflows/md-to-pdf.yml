@@ -78,21 +78,30 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -e
+
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          git checkout -B pdfs
-          git rm -rf . || true
-          git clean -fdx
+          # Make sure the branch exists
+          git fetch origin
+          git checkout --orphan pdfs
 
-          cp $GITHUB_WORKSPACE/$PDF_FOLDER .
+          # Remove everything except .git
+          git rm -rf .
 
-          git add .
+          # Check if PDF folder exists
+          if [ -d "$GITHUB_WORKSPACE/$PDF_FOLDER" ]; then
+            mkdir -p pdfs
+            cp -r "$GITHUB_WORKSPACE/$PDF_FOLDER"/* pdfs/
+          else
+            echo "No PDFs found, skipping copy"
+          fi
+
+          # Commit and push
+          git add pdfs || true
           git commit -m "Update PDFs" || true
-
-          git remote set-url origin \
-            https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           git push origin pdfs --force
 
       # Upload PDFs as workflow artifacts
