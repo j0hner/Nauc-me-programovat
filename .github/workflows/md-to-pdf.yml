@@ -46,10 +46,7 @@ jobs:
             echo "Processing $mdfile..."
             
             # Convert Markdown to HTML with syntax highlighting
-            pandoc "$mdfile" -o "$PDF_FOLDER/$filename.html" \
-              --syntax-highlighting=pygments \
-              --standalone \
-              --css "$CSS_FILE"
+            pandoc "$mdfile" -o "$PDF_FOLDER/$filename.html" --highlight-style=pygments --standalone --css "$CSS_FILE"
             
             # Convert HTML to PDF with WeasyPrint
             python -m weasyprint "$PDF_FOLDER/$filename.html" "$PDF_FOLDER/$filename.pdf"
