@@ -45,8 +45,11 @@ jobs:
           pip install weasyprint
 
       # Install Pandoc
-      - name: Install Pandoc
-        run: sudo apt-get install -y pandoc
+      - name: Install Pandoc (latest)
+        run: |
+          PANDOC_VERSION=3.8.3
+          wget https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-1-amd64.deb
+          sudo dpkg -i pandoc-${PANDOC_VERSION}-1-amd64.deb
 
       # Convert Markdown → HTML → PDF
       - name: Convert Markdown to PDF
@@ -58,7 +61,7 @@ jobs:
 
             pandoc "$mdfile" \
               -o "$GITHUB_WORKSPACE/$PDF_FOLDER/$filename.html" \
-              --highlight-style=pygments \
+              --syntax-highlighting=pygments \
               --standalone \
               --css "$GITHUB_WORKSPACE/.github/$CSS_FILE"
 
