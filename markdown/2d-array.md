@@ -9,7 +9,7 @@ Jsi brigádník v kině a budeš vyvíjet pomůcku pro organizaci kinosálu.
 ### Indexování dvourozměrného pole
 
 ::: tutor
- Do dvourozměrného pole se indexuje pomocí dvou hranatých závorek za sebou: [][]. Do první závorky se zadává číslo řádku, do druhé číslo prvku v řádku. (obě začínající nulou)
+ Do dvourozměrného pole se indexuje pomocí dvou hranatých závorek za sebou: `[][]`. Do první závorky se zadává číslo řádku, do druhé číslo prvku v řádku. (obě začínající nulou)
 :::
 
 Vytvoř dvourozměrné pole typu `int` a nastav mu hodnotu:

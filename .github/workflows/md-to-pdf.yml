@@ -50,6 +50,7 @@ jobs:
           PANDOC_VERSION=3.8.3
           wget https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-1-amd64.deb
           sudo dpkg -i pandoc-${PANDOC_VERSION}-1-amd64.deb
+          rm pandoc-${PANDOC_VERSION}-1-amd64.deb
 
       # Convert Markdown → HTML → PDF
       - name: Convert Markdown to PDF
@@ -81,7 +82,8 @@ jobs:
           git config user.email "github-actions@github.com"
 
           git checkout -B pdfs
-          git rm -rf .
+          git rm -rf . || true
+          git clean -fdx
 
           cp -r "$GITHUB_WORKSPACE/$PDF_FOLDER"/* .
 
