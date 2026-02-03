@@ -3,77 +3,96 @@ name: Markdown to PDF
 on:
   push:
     paths:
-      - 'markdown/**'   # Trigger only when files in docs change
+      - 'markdown/**'
 
 permissions:
   contents: write
 
 env:
-  MD_FOLDER: markdown        # Folder containing Markdown files
-  PDF_FOLDER: pdf       # Output folder for PDFs
-  CSS_FILE: style.css    # Path to CSS file for Pandoc
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+  MD_FOLDER: markdown
+  PDF_FOLDER: pdf
+  CSS_FILE: style.css
 
 jobs:
   build-pdfs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout the repo
+      # Checkout full repo history (required for branch operations)
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      # 2. Set up Python
+      # Set up Python
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      # 3. Install WeasyPrint and dependencies
+      # Install WeasyPrint and system dependencies
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip python3-cairo python3-gi python3-gi-cairo gir1.2-pango-1.0 gir1.2-gdkpixbuf-2.0
+          sudo apt-get install -y \
+            python3-pip \
+            python3-cairo \
+            python3-gi \
+            python3-gi-cairo \
+            gir1.2-pango-1.0 \
+            gir1.2-gdkpixbuf-2.0
           pip install --upgrade pip
           pip install weasyprint
 
-      # 4. Install Pandoc
+      # Install Pandoc
       - name: Install Pandoc
         run: sudo apt-get install -y pandoc
 
-      # 5. Convert all Markdown files to PDF
+      # Convert Markdown → HTML → PDF
       - name: Convert Markdown to PDF
         run: |
-          mkdir -p "$PDF_FOLDER"
+          mkdir -p "$GITHUB_WORKSPACE/$PDF_FOLDER"
+
           for mdfile in "$MD_FOLDER"/*.md; do
             filename=$(basename "$mdfile" .md)
-            echo "Processing $mdfile..."
-            
-            # Convert Markdown to HTML with syntax highlighting
-            pandoc "$mdfile" -o "$GITHUB_WORKSPACE/$PDF_FOLDER/$filename.html" --highlight-style=pygments --standalone --css "$GITHUB_WORKSPACE/.github/$CSS_FILE"
-            
-            # Convert HTML to PDF with WeasyPrint
-            python -m weasyprint "$GITHUB_WORKSPACE/$PDF_FOLDER/$filename.html" "$GITHUB_WORKSPACE/$PDF_FOLDER/$filename.pdf"
-            
-            # Delete temporary HTML
-            rm "$PDF_FOLDER/$filename.html"
+
+            pandoc "$mdfile" \
+              -o "$GITHUB_WORKSPACE/$PDF_FOLDER/$filename.html" \
+              --highlight-style=pygments \
+              --standalone \
+              --css "$GITHUB_WORKSPACE/.github/$CSS_FILE"
+
+            python -m weasyprint \
+              "$GITHUB_WORKSPACE/$PDF_FOLDER/$filename.html" \
+              "$GITHUB_WORKSPACE/$PDF_FOLDER/$filename.pdf"
+
+            rm "$GITHUB_WORKSPACE/$PDF_FOLDER/$filename.html"
           done
 
+      # Push PDFs into dedicated branch
       - name: Push PDFs to pdfs branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-            git config user.name "github-actions"
-            git config user.email "github-actions@github.com"
-            git checkout -B pdfs
-            cp -r "$GITHUB_WORKSPACE/$PDF_FOLDER"/* .
-            git add .
-            git commit -m "Update PDFs" || echo "No changes to commit"
-            git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-            git push origin pdfs --force
-        
-              # 6. Upload PDFs as artifact
-              - name: Upload PDFs
-                uses: actions/upload-artifact@v4
-                with:
-                  name: markdown-pdfs
-                  path: ${{ env.PDF_FOLDER }}/
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git checkout -B pdfs
+          git rm -rf .
+
+          cp -r "$GITHUB_WORKSPACE/$PDF_FOLDER"/* .
+
+          git add .
+          git commit -m "Update PDFs" || true
+
+          git remote set-url origin \
+            https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+
+          git push origin pdfs --force
+
+      # Upload PDFs as workflow artifacts
+      - name: Upload PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: markdown-pdfs
+          path: .
