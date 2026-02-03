@@ -5,6 +5,9 @@ on:
     paths:
       - 'markdown/**'   # Trigger only when files in docs change
 
+permissions:
+  contents: write
+
 env:
   MD_FOLDER: markdown        # Folder containing Markdown files
   PDF_FOLDER: pdf       # Output folder for PDFs
