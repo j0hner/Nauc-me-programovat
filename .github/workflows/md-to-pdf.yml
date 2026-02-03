@@ -85,8 +85,6 @@ jobs:
           git rm -rf . || true
           git clean -fdx
 
-          cp -r "$GITHUB_WORKSPACE/$PDF_FOLDER"/* .
-
           git add .
           git commit -m "Update PDFs" || true
 
