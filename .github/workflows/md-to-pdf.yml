@@ -60,7 +60,7 @@ jobs:
 
       # 6. Upload PDFs as artifact
       - name: Upload PDFs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: markdown-pdfs
           path: ${{ env.PDF_FOLDER }}/
