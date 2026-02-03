@@ -98,7 +98,8 @@ jobs:
             echo "No PDFs found, skipping copy"
           fi
 
-          cp $GITHUB_WORKSPACE/pdfsREADME.md README.md
+          echo "# PDFs branch" > README.md
+          echo "Na téhle branchi jsou k nalezení pdf verze dokumentů z adresáře markdown" >> README.md
           git add README.md
 
           # Commit and push
