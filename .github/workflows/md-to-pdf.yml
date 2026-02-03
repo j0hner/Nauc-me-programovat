@@ -8,7 +8,7 @@ on:
 env:
   MD_FOLDER: markdown        # Folder containing Markdown files
   PDF_FOLDER: pdf       # Output folder for PDFs
-  CSS_FILE: .github/style.css    # Path to CSS file for Pandoc
+  CSS_FILE: style.css    # Path to CSS file for Pandoc
 
 jobs:
   build-pdfs:
@@ -46,14 +46,30 @@ jobs:
             echo "Processing $mdfile..."
             
             # Convert Markdown to HTML with syntax highlighting
-            pandoc "$mdfile" -o "$PDF_FOLDER/$filename.html" --highlight-style=pygments --standalone --css "$CSS_FILE"
+            pandoc "$mdfile" -o "$GITHUB_WORKSPACE/$PDF_FOLDER/$filename.html" --highlight-style=pygments --standalone --css "$GITHUB_WORKSPACE/.github/$CSS_FILE"
             
             # Convert HTML to PDF with WeasyPrint
-            python -m weasyprint "$PDF_FOLDER/$filename.html" "$PDF_FOLDER/$filename.pdf"
+            python -m weasyprint "$GITHUB_WORKSPACE/$PDF_FOLDER/$filename.html" "$GITHUB_WORKSPACE/$PDF_FOLDER/$filename.pdf"
             
             # Delete temporary HTML
             rm "$PDF_FOLDER/$filename.html"
           done
+
+      - name: Push PDFs to pdfs branch
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          
+          # Create or switch to branch
+          git checkout -B pdfs
+          
+          # Copy generated PDFs
+          cp -r "$GITHUB_WORKSPACE/$PDF_FOLDER"/* .
+          
+          # Commit and push
+          git add .
+          git commit -m "Update PDFs" || echo "No changes to commit"
+          git push origin pdfs --force
 
       # 6. Upload PDFs as artifact
       - name: Upload PDFs
