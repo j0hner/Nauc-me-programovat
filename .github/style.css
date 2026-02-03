@@ -1,0 +1,195 @@
+/* Theme variables */
+:root {
+    --bg-color: #0d1117;       /* dark mode background */
+    --text-color: #c9d1d9;     /* dark mode text */
+    --link-color: #58a6ff;
+    --blockquote-bg: #161b22;
+    --blockquote-border: #30363d;
+    --table-border: #30363d;
+    --table-header-bg: #161b22;
+    --table-header-color: #e6edf3;
+    --code-bg: #161b22;
+    --code-color: #c9d1d9;
+    --hr-color: #21262d;
+    --highlight-bg: #bb800966;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+/* Base styling */
+body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font);
+    line-height: 1.6;
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    margin-top: 1.5em;
+    margin-bottom: 0.6em;
+    line-height: 1.25;
+}
+
+/* Links */
+a { color: var(--link-color); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Blockquotes */
+blockquote {
+    color: var(--text-color);
+    border-left: 0.25em solid var(--blockquote-border);
+    padding: 0.5em 1em;
+    background: var(--blockquote-bg);
+    border-radius: 6px;
+    margin: 1em 0;
+}
+
+/* Code blocks */
+code {
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    border-radius: 6px;
+    padding: 0.2em 0.4em;
+    font-size: 0.9em;
+    background: var(--code-bg);
+    color: var(--code-color);
+}
+pre {
+    border: 1px solid var(--table-border);
+    border-radius: 6px;
+    padding: 1em;
+    overflow-x: auto;
+}
+pre code { background: none; padding: 0; }
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1.5em 0;
+    border: 1px solid var(--table-border);
+}
+th, td { padding: 0.6em 1em; border-bottom: 1px solid var(--table-border); }
+th { background: var(--table-header-bg); color: var(--table-header-color); font-weight: 600; }
+tr:last-child td { border-bottom: none; }
+
+/* Horizontal rule */
+hr { border: 0; height: 1px; background: var(--hr-color); margin: 2em 0; }
+
+/* Highlights */
+mark { background-color: var(--highlight-bg); border-radius: 2px; padding: 0.1em 0.3em; }
+
+/* Prevent elements from being split across pages */
+table,
+pre,
+blockquote,
+img,
+ul,
+ol {
+  break-inside: avoid;
+  page-break-inside: avoid; /* legacy */
+}
+
+/* Custom blocks */
+
+/* ------------------ Tutor Block ------------------ */
+div.tutor {
+  background-color: #1e1e2f;
+  color: #d4d4d4;
+  border-left: 4px solid #0a84ff;
+  border-radius: 8px;
+  padding: 1em;
+  margin: 1em 0;
+  line-height: 1.4;
+  page-break-inside: avoid;
+  overflow: hidden;
+  position: relative;
+}
+
+div.tutor::before {
+  content: "💡 Tutor";
+  display: block;
+  font-weight: bold;
+  color: #0a84ff;
+  margin-bottom: 0.5em;
+  font-size: 1em;
+}
+
+/* ------------------ Tip Block ------------------ */
+div.tip {
+  background-color: #2e2b1f;
+  color: #f9f1c0;
+  border-left: 4px solid #ffdd57;
+  border-radius: 8px;
+  padding: 1em;
+  margin: 1em 0;
+  line-height: 1.4;
+  page-break-inside: avoid;
+  overflow: hidden;
+  position: relative;
+}
+
+div.tip::before {
+  content: "⚡ Tip";
+  display: block;
+  font-weight: bold;
+  color: #ffdd57;
+  margin-bottom: 0.5em;
+  font-size: 1em;
+}
+
+/* ------------------ Warning Block ------------------ */
+div.warning {
+  background-color: #2f1e1e;
+  color: #ffdcdc;
+  border-left: 4px solid #ff4c4c;
+  border-radius: 8px;
+  padding: 1em;
+  margin: 1em 0;
+  line-height: 1.4;
+  page-break-inside: avoid;
+  overflow: hidden;
+  position: relative;
+}
+
+div.warning::before {
+  content: "⚠ Warning";
+  display: block;
+  font-weight: bold;
+  color: #ff4c4c;
+  margin-bottom: 0.5em;
+  font-size: 1em;
+}
+
+
+/* Syntax highlighting */
+code span.dv,
+code span.fl { color: #b5cea8; }
+code span.st { color: #d69d85; }
+code span.fu { color: #dcdcaa; }
+code span.va { color: #9cdcfe; }
+code span.dt { color: #4ec9b0; }
+code span.ss { color: #ce9178; }
+code span.cn { color: #4fc1ff; }
+code span.co { color: #525252; font-style: italic; }
+code span.kw { color: #569cd6; font-weight: bold;  }
+code span.op { color: #d4d4d4; font-weight: bold;  }
+code span.er { color: #f44747; font-weight: bold;  }
+code span.op { color: #d4d4d4; font-weight: bold;  }
+
+@page {
+    margin: .5in;
+    background: var(--bg-color);
+    
+    /* @bottom-center {
+        content: counter(page) " / " counter(pages);
+        font-family: var(--font);
+        color: var(--text-color);
+    } */
+}
