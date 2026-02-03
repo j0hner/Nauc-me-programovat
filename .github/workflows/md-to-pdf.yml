@@ -98,6 +98,9 @@ jobs:
             echo "No PDFs found, skipping copy"
           fi
 
+          cp $GITHUB_WORKSPACE/pdfsREADME.md README.md
+          git add README.md
+
           # Commit and push
           git add pdfs || true
           git commit -m "Update PDFs" || true
