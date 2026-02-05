@@ -215,10 +215,10 @@ code span.ss { color: #ce9178; }
 code span.cn { color: #4fc1ff; }
 code span.bu { color: #4ec9b0; }
 code span.co { color: #525252; font-style: italic; }
-code span.kw { color: #569cd6; font-weight: bold;  }
-code span.cf { color: #a288b5; font-weight: bold;  }
-code span.op { color: #d4d4d4; font-weight: bold;  }
-code span.er { color: #f44747; font-weight: bold;  }
+code span.kw { color: #569cd6; }
+code span.cf { color: #a288b5; }
+code span.op { color: #d4d4d4; }
+code span.er { color: #f44747; }
 
 @page {
     margin: .5in;
