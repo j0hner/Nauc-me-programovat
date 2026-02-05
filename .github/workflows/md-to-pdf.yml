@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'markdown/**'
+      - '.github/**'
 
 permissions:
   contents: write

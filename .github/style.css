@@ -86,7 +86,9 @@ table {
 th, td { padding: 0.6em 1em; border-bottom: 1px solid var(--table-border); }
 th { background: var(--table-header-bg); color: var(--table-header-color); font-weight: 600; }
 tr:last-child td { border-bottom: none; }
-colgroup { /* Disable pandoc column spacing */
+
+/* Disable pandoc column spacing */
+colgroup { 
   display: none;
 }
 
