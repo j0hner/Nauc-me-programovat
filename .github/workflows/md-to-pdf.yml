@@ -52,53 +52,53 @@ jobs:
           sudo dpkg -i pandoc-${PANDOC_VERSION}-1-amd64.deb
           rm pandoc-${PANDOC_VERSION}-1-amd64.deb
 
-          # Convert Markdown → HTML → PDF (incremental)
-          - name: Convert Markdown to PDF
-            run: |
-              set -e
-    
-              mkdir -p "$GITHUB_WORKSPACE/$PDF_FOLDER"
-    
-              # Get changed files in this push
-              CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD || true)
-    
-              CSS_CHANGED=false
-              MD_FILES=""
-    
-              # Detect CSS change
-              if echo "$CHANGED_FILES" | grep -q "^.github/$CSS_FILE$"; then
-                CSS_CHANGED=true
-              fi
-    
-              if [ "$CSS_CHANGED" = true ]; then
-                echo "CSS changed → rebuilding all markdown files"
-                MD_FILES=$(find "$MD_FOLDER" -type f -name "*.md")
-              else
-                echo "CSS unchanged → building only changed markdown files"
-                MD_FILES=$(echo "$CHANGED_FILES" | grep "^$MD_FOLDER/.*\.md$" || true)
-              fi
-    
-              for mdfile in $MD_FILES; do
-                [ -f "$mdfile" ] || continue
-    
-                relpath="${mdfile#$MD_FOLDER/}"
-                outdir="$GITHUB_WORKSPACE/$PDF_FOLDER/$(dirname "$relpath")"
-                filename="$(basename "$mdfile" .md)"
-    
-                mkdir -p "$outdir"
-    
-                pandoc "$mdfile" \
-                  -o "$outdir/$filename.html" \
-                  --syntax-highlighting=pygments \
-                  --standalone \
-                  --css "$GITHUB_WORKSPACE/.github/$CSS_FILE"
-    
-                python -m weasyprint \
-                  "$outdir/$filename.html" \
-                  "$outdir/$filename.pdf"
-    
-                rm "$outdir/$filename.html"
-              done
+      # Convert Markdown → HTML → PDF (incremental)
+      - name: Convert Markdown to PDF
+        run: |
+          set -e
+
+          mkdir -p "$GITHUB_WORKSPACE/$PDF_FOLDER"
+
+          # Get changed files in this push
+          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD || true)
+
+          CSS_CHANGED=false
+          MD_FILES=""
+
+          # Detect CSS change
+          if echo "$CHANGED_FILES" | grep -q "^.github/$CSS_FILE$"; then
+            CSS_CHANGED=true
+          fi
+
+          if [ "$CSS_CHANGED" = true ]; then
+            echo "CSS changed → rebuilding all markdown files"
+            MD_FILES=$(find "$MD_FOLDER" -type f -name "*.md")
+          else
+            echo "CSS unchanged → building only changed markdown files"
+            MD_FILES=$(echo "$CHANGED_FILES" | grep "^$MD_FOLDER/.*\.md$" || true)
+          fi
+
+          for mdfile in $MD_FILES; do
+            [ -f "$mdfile" ] || continue
+
+            relpath="${mdfile#$MD_FOLDER/}"
+            outdir="$GITHUB_WORKSPACE/$PDF_FOLDER/$(dirname "$relpath")"
+            filename="$(basename "$mdfile" .md)"
+
+            mkdir -p "$outdir"
+
+            pandoc "$mdfile" \
+              -o "$outdir/$filename.html" \
+              --syntax-highlighting=pygments \
+              --standalone \
+              --css "$GITHUB_WORKSPACE/.github/$CSS_FILE"
+
+            python -m weasyprint \
+              "$outdir/$filename.html" \
+              "$outdir/$filename.pdf"
+
+            rm "$outdir/$filename.html"
+          done
 
       # Push PDFs into dedicated branch
       - name: Push PDFs to pdfs branch
