@@ -2,8 +2,8 @@
 
 /* Theme variables */
 :root {
-    --bg-color: #0d1117;       /* dark mode background */
-    --text-color: #c9d1d9;     /* dark mode text */
+    --bg-color: #0d1117;
+    --text-color: #c9d1d9;
     --link-color: #58a6ff;
     --blockquote-bg: #161b22;
     --blockquote-border: #30363d;
