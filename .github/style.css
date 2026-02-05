@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+
 /* Theme variables */
 :root {
     --bg-color: #0d1117;       /* dark mode background */
@@ -8,7 +10,7 @@
     --table-border: #30363d;
     --table-header-bg: #161b22;
     --table-header-color: #e6edf3;
-    --code-bg: #161b22;
+    --code-bg: #1f1f1f;
     --code-color: #c9d1d9;
     --hr-color: #21262d;
     --highlight-bg: #bb800966;
@@ -50,7 +52,7 @@ blockquote {
 
 /* Code blocks */
 code {
-    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    font-family: "FiraCode Nerd Font", "Fira Code", "Consolas", "monospace";
     border-radius: 6px;
     padding: 0.2em 0.4em;
     font-size: 0.9em;
@@ -62,8 +64,14 @@ pre {
     border-radius: 6px;
     padding: 1em;
     overflow-x: auto;
+    background-color: var(--code-bg);
 }
 pre code { background: none; padding: 0; }
+
+code, pre {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "clig" 0, "calt" 0;
+}
 
 /* Tables */
 table {
@@ -78,6 +86,9 @@ table {
 th, td { padding: 0.6em 1em; border-bottom: 1px solid var(--table-border); }
 th { background: var(--table-header-bg); color: var(--table-header-color); font-weight: 600; }
 tr:last-child td { border-bottom: none; }
+colgroup { /* Disable pandoc column spacing */
+  display: none;
+}
 
 /* Horizontal rule */
 hr { border: 0; height: 1px; background: var(--hr-color); margin: 2em 0; }
@@ -193,6 +204,7 @@ section.warn > h1 {
 /* Syntax highlighting */
 code span.dv,
 code span.fl { color: #b5cea8; }
+code span.bn { color: #b5cea8; }
 code span.st { color: #d69d85; }
 code span.fu { color: #dcdcaa; }
 code span.va { color: #9cdcfe; }

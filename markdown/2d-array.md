@@ -83,6 +83,8 @@ Spočítej, kolik sedadel je obsazených.
 
 V aplikaci pro rezervaci míst je potřeba zobrazit řadu sedadel, která je nejmémě obsazená. Najdi její index v poli z předchozího úkolu.
 
+---
+
 ::: tip
 K tomuto cvičení je modelové řešení. Pokus se ale nejdřív problémy vyřešit sám/a.\
 Modelové řešení je k nalezení [zde](https://github.com/j0hner/Nauc-me-programovat/blob/main/model-solutions/2d-arrays.java)
