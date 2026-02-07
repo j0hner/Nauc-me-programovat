@@ -116,10 +116,10 @@ jobs:
             fi
             echo "compiling: $mdfile"
       
-            LAST_UPDATED=git log -1 --follow \ # use git log for tracking actual md content changes
+            LAST_UPDATED=$(git log -1 --follow \ # use git log for tracking actual md content changes
               --format='%cd' \
               --date=format:'%d.%m.%Y %H:%M' \
-              -- "$mdfile"
+              -- "$mdfile")
 
             echo $LAST_UPDATED
 

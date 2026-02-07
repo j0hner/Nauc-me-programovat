@@ -203,6 +203,7 @@ section.warn > h1 {
   content: "Varování";
 }
 
+/* Set default font styles */
 code span {
   font-weight: normal;
   font-style: normal;
