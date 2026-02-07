@@ -142,29 +142,35 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
-
+      
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-
+      
+          # --- stash artifacts OUTSIDE the repo ---
+          rm -rf /tmp/pdfs /tmp/hashes
+          mkdir -p /tmp/pdfs /tmp/hashes
+      
+          cp -r "$GITHUB_WORKSPACE/$PDF_FOLDER"/. /tmp/pdfs/ || true
+          cp -r "$GITHUB_WORKSPACE/hashes"/. /tmp/hashes/ || true
+      
+          # --- switch to orphan branch ---
           git fetch origin
           git checkout --orphan pdfs
-
-          # Wipe working tree
+      
+          # wipe working tree
           git rm -rf .
-
-          # Recreate structure
+      
+          # --- restore artifacts ---
           mkdir -p pdfs hashes
-
-          # Copy generated artifacts
-          cp -r "$GITHUB_WORKSPACE/$PDF_FOLDER"/. pdfs/ || true
-          cp -r "$GITHUB_WORKSPACE/hashes"/. hashes/ || true
-
+          cp -r /tmp/pdfs/. pdfs/ || true
+          cp -r /tmp/hashes/. hashes/ || true
+      
           echo "# PDFs branch" > README.md
           echo "Automaticky generované PDF verze dokumentů z adresáře markdown." >> README.md
-
+      
           git add pdfs hashes README.md
           git commit -m "Update PDFs" || true
-
+      
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           git push origin pdfs --force
 
