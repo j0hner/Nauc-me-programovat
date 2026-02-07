@@ -114,12 +114,14 @@ jobs:
               continue
             fi
       
-            LAST_UPDATED=$(git log -1 --date=short --format="%cd" -- "$mdfile")
-            echo $LAST_UPDATED
-      
-            sed -e "s/\$LAST_UPDATED\$/$LAST_UPDATED/g" \
-              "$GITHUB_WORKSPACE/.github/footer.html" \
-              > /tmp/pandoc/footer.html
+            LAST_UPDATED=$(git log -1 --format="%cd" --date=format:'%d.%m.%Y %H:%M' -- "$mdfile")
+            
+
+            sed "s|\$LAST_UPDATED\$|$LAST_UPDATED|g" \
+                "$GITHUB_WORKSPACE/.github/footer.html" \
+                > /tmp/pandoc/footer.html
+
+            cat /tmp/pandoc/footer.html
 
             pandoc "$mdfile" \
               -o "$pdf_out.html" \
