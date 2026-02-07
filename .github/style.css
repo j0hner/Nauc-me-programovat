@@ -203,6 +203,11 @@ section.warn > h1 {
   content: "Varování";
 }
 
+code span {
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* Syntax highlighting */
 code span.op { color: #d4d4d4; }
 code span.dv,

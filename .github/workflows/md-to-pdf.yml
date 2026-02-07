@@ -111,10 +111,15 @@ jobs:
             new_hash=$(hash_file "$mdfile")
       
             if [ "$CSS_CHANGED" = false ] && [ -f "$hash_out" ] && [ "$(cat "$hash_out")" = "$new_hash" ]; then
+              echo "skipping: $mdfile"
               continue
             fi
+            echo "compiling: $mdfile"
       
-            LAST_UPDATED=$(git log -1 --format="%cd" --date=format:'%d.%m.%Y %H:%M' -- "$mdfile")
+            LAST_UPDATED=git log -1 --follow \ # use git log for tracking actual md content changes
+              --format='%cd' \
+              --date=format:'%d.%m.%Y %H:%M' \
+              -- "$mdfile"
 
             echo $LAST_UPDATED
 
@@ -155,9 +160,6 @@ jobs:
           ls "$GITHUB_WORKSPACE/$PDF_FOLDER"
           cp -r "$GITHUB_WORKSPACE/$PDF_FOLDER" /tmp/pdfs/
           cp -r "$GITHUB_WORKSPACE/hashes" /tmp/hashes/
-
-          ls /tmp/pdfs/
-          ls /tmp/hashes/
       
           # --- switch to orphan branch ---
           git fetch origin
@@ -173,8 +175,6 @@ jobs:
       
           echo "# PDFs branch" > README.md
           echo "Automaticky generované PDF verze dokumentů z adresáře markdown." >> README.md
-      
-          ls
           
           git add pdf pdfs hashes README.md
           git commit -m "Update PDFs"
