@@ -116,10 +116,10 @@ jobs:
       
             LAST_UPDATED=$(git log -1 --format="%cd" --date=format:'%d.%m.%Y %H:%M' -- "$mdfile")
 
-            echo $LLAST_UPDATED
+            echo $LAST_UPDATED
 
             cat "$GITHUB_WORKSPACE/.github/footer.html" | \
-            sed "s|\$LAST_UPDATED\$|$LAST_UPDATED|g" \
+            sed "s|LAST_UPDATED|$LAST_UPDATED|g" \
             > /tmp/pandoc/footer.html
 
             pandoc "$mdfile" \
