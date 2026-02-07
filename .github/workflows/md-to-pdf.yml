@@ -179,7 +179,7 @@ jobs:
       
           ls
           
-          git add pdfs hashes README.md
+          git add pdf pdfs hashes README.md
           git commit -m "Update PDFs"
       
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
