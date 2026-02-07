@@ -162,8 +162,8 @@ jobs:
       
           # --- restore artifacts ---
           mkdir -p pdfs hashes
-          cp -r /tmp/pdfs/. pdfs/ || true
-          cp -r /tmp/hashes/. hashes/ || true
+          cp -r /tmp/pdfs/ .pdfs/ || true
+          cp -r /tmp/hashes/ .hashes/ || true
       
           echo "# PDFs branch" > README.md
           echo "Automaticky generované PDF verze dokumentů z adresáře markdown." >> README.md
