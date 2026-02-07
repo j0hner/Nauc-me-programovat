@@ -115,13 +115,11 @@ jobs:
             fi
       
             LAST_UPDATED=$(git log -1 --date=short --format="%cd" -- "$mdfile")
+            echo $LAST_UPDATED
       
             sed -e "s/\$LAST_UPDATED\$/$LAST_UPDATED/g" \
               "$GITHUB_WORKSPACE/.github/footer.html" \
               > /tmp/pandoc/footer.html
-      
-            
-            echo $mdfile
 
             pandoc "$mdfile" \
               -o "$pdf_out.html" \
@@ -133,8 +131,6 @@ jobs:
             python -m weasyprint \
               "$pdf_out.html" \
               "$pdf_out"
-
-            echo  $pdf_put
       
             rm "$pdf_out.html"
             echo "$new_hash" > "$hash_out"
