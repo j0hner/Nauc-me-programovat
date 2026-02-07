@@ -204,29 +204,60 @@ section.warn > h1 {
 }
 
 /* Syntax highlighting */
+code span.op { color: #d4d4d4; }
 code span.dv,
 code span.fl { color: #b5cea8; }
 code span.bn { color: #b5cea8; }
-code span.st { color: #d69d85; }
 code span.fu { color: #dcdcaa; }
-code span.va { color: #9cdcfe; }
-code span.dt { color: #4ec9b0; }
+code span.st { color: #d69d85; }
 code span.ss { color: #ce9178; }
+code span.ch { color: #ce9178; }
+code span.va { color: #9cdcfe; }
 code span.cn { color: #4fc1ff; }
-code span.bu { color: #4ec9b0; }
-code span.co { color: #525252; font-style: italic; }
 code span.kw { color: #569cd6; }
+code span.dt { color: #4ec9b0; }
+code span.bu { color: #4ec9b0; }
 code span.cf { color: #a288b5; }
-code span.op { color: #d4d4d4; }
 code span.er { color: #f44747; }
+code span.co { color: #525252; font-style: italic; }
+
+/* -------- PDF Footer -------- */
+
+#pdf-footer {
+  position: running(pdf-footer);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-size: 9pt;
+  color: #8b949e; /* GitHub-muted */
+  border-top: 1px solid #30363d;
+  padding-top: 6px;
+
+  font-family: var(--font, system-ui);
+}
+
+#pdf-footer .sep {
+  margin: 0 0.5em;
+  opacity: 0.6;
+}
+
+/* Page placement */
+@page {
+  @bottom-center {
+    content: element(pdf-footer);
+  }
+}
 
 @page {
-    margin: .5in;
-    background: var(--bg-color);
-    
-    /* @bottom-center {
-        content: counter(page) " / " counter(pages);
-        font-family: var(--font);
-        color: var(--text-color);
-    } */
+  margin: .5in;
+  background: var(--bg-color);
 }
+
+/* @page {
+  @top-left {
+    content: "github.com/j0hner/Nauc-me-programovat";
+    color: hsl(216, 28%, 20%);
+    font-family: var(--font);
+  }
+} */

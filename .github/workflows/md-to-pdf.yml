@@ -59,49 +59,87 @@ jobs:
           set -e
 
           mkdir -p "$GITHUB_WORKSPACE/$PDF_FOLDER"
+          mkdir -p "$GITHUB_WORKSPACE/hashes"
+          mkdir -p /tmp/pandoc
 
-          # Get changed files in this push
-          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD || true)
+          hash_file() {
+            sha256sum "$1" | awk '{print $1}'
+          }
+
+          # Get changed files (status-aware)
+          CHANGED=$(git diff --name-status HEAD~1 HEAD || true)
 
           CSS_CHANGED=false
-          MD_FILES=""
-
-          # Detect CSS change
-          if echo "$CHANGED_FILES" | grep -q "^.github/$CSS_FILE$"; then
+          if echo "$CHANGED" | grep -q "^M[[:space:]].github/$CSS_FILE$"; then
             CSS_CHANGED=true
           fi
 
+          # Handle renames (R*)
+          echo "$CHANGED" | awk '$1 ~ /^R/ {print $2 "|" $3}' | while IFS="|" read old new; do
+            old_rel="${old#$MD_FOLDER/}"
+            new_rel="${new#$MD_FOLDER/}"
+
+            old_pdf="$PDF_FOLDER/${old_rel%.md}.pdf"
+            new_pdf="$PDF_FOLDER/${new_rel%.md}.pdf"
+
+            old_hash="hashes/${old_rel%.md}.hash"
+            new_hash="hashes/${new_rel%.md}.hash"
+
+            if [ -f "$old_pdf" ]; then
+              mkdir -p "$(dirname "$new_pdf")" "$(dirname "$new_hash")"
+              mv "$old_pdf" "$new_pdf"
+              mv "$old_hash" "$new_hash" 2>/dev/null || true
+            fi
+          done
+
+          # Decide what to build
           if [ "$CSS_CHANGED" = true ]; then
-            echo "CSS changed → rebuilding all markdown files"
             MD_FILES=$(find "$MD_FOLDER" -type f -name "*.md")
           else
-            echo "CSS unchanged → building only changed markdown files"
-            MD_FILES=$(echo "$CHANGED_FILES" | grep "^$MD_FOLDER/.*\.md$" || true)
+            MD_FILES=$(echo "$CHANGED" | awk '$1 ~ /^[AM]/ {print $2}' | grep "^$MD_FOLDER/.*\.md$" || true)
           fi
 
           for mdfile in $MD_FILES; do
             [ -f "$mdfile" ] || continue
 
-            relpath="${mdfile#$MD_FOLDER/}"
-            outdir="$GITHUB_WORKSPACE/$PDF_FOLDER/$(dirname "$relpath")"
-            filename="$(basename "$mdfile" .md)"
+            rel="${mdfile#$MD_FOLDER/}"
+            base="$(basename "$mdfile" .md)"
 
-            mkdir -p "$outdir"
+            pdf_out="$PDF_FOLDER/$(dirname "$rel")/$base.pdf"
+            hash_out="hashes/$(dirname "$rel")/$base.hash"
+
+            mkdir -p "$(dirname "$pdf_out")" "$(dirname "$hash_out")"
+
+            new_hash=$(hash_file "$mdfile")
+
+            if [ "$CSS_CHANGED" = false ] && [ -f "$hash_out" ] && [ "$(cat "$hash_out")" = "$new_hash" ]; then
+              continue
+            fi
+
+            # ---- footer injection ----
+            LAST_UPDATED=$(git log -1 --format="%Y-%m-%d" -- "$mdfile")
+
+            sed "s|\$LAST_UPDATED\$|$LAST_UPDATED|g" \
+              "$GITHUB_WORKSPACE/.github/footer.html" \
+              > /tmp/pandoc/footer.html
 
             pandoc "$mdfile" \
-              -o "$outdir/$filename.html" \
+              -o "$pdf_out.html" \
               --syntax-highlighting=pygments \
               --standalone \
-              --css "$GITHUB_WORKSPACE/.github/$CSS_FILE"
+              --css "$GITHUB_WORKSPACE/.github/$CSS_FILE" \
+              --include-after-body /tmp/pandoc/footer.html
 
             python -m weasyprint \
-              "$outdir/$filename.html" \
-              "$outdir/$filename.pdf"
+              "$pdf_out.html" \
+              "$pdf_out"
 
-            rm "$outdir/$filename.html"
+            rm "$pdf_out.html"
+            echo "$new_hash" > "$hash_out"
           done
 
-      # Push PDFs into dedicated branch
+
+      # Push PDFs + hashes into dedicated branch
       - name: Push PDFs to pdfs branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -111,28 +149,29 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          # Make sure the branch exists
           git fetch origin
           git checkout --orphan pdfs
 
           # Remove everything except .git
           git rm -rf .
 
-          # Check if PDF folder exists
+          # Copy PDFs
           if [ -d "$GITHUB_WORKSPACE/$PDF_FOLDER" ]; then
-            mkdir -p pdfs
-            cp -r "$GITHUB_WORKSPACE/$PDF_FOLDER"/* pdfs/
+            mkdir -p pdfs hashes
+
+            find "$GITHUB_WORKSPACE/$PDF_FOLDER" -type f -name "*.pdf" -exec cp --parents {} . \;
+            find "$GITHUB_WORKSPACE/$PDF_FOLDER" -type f -name "*.hash" -exec cp --parents {} . \;
           else
             echo "No PDFs found, skipping copy"
           fi
 
           echo "# PDFs branch" > README.md
-          echo "Na téhle branchi jsou k nalezení pdf verze dokumentů z adresáře markdown" >> README.md
+          echo "Na téhle branchi jsou k nalezení PDF verze dokumentů z adresáře markdown." >> README.md
           git add README.md
 
-          # Commit and push
-          git add pdfs || true
+          git add pdfs hashes || true
           git commit -m "Update PDFs" || true
+
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
           git push origin pdfs --force
 

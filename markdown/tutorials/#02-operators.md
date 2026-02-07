@@ -37,7 +37,7 @@ Logické operátory pracují striktně s typem `boolean` a vrací hodnotu `boole
 
 ## Bitwise
 
-Bitwise operátory pracují s binární reprezentací čísel, a porovnávají kařdý bit zvlášť, a produkují 3. binární číslo jako výsledek. Bitwise logické operátroy fungují tak, že porovnávají hodnoty bitů "nad sebou" na dané pozici.
+Bitwise operátory pracují s binární reprezentací čísel, porovnávají kařdý bit zvlášť, a produkují 3. binární číslo jako výsledek. Bitwise logické operátroy fungují tak, že porovnávají hodnoty bitů "nad sebou" na dané pozici.
 
 |operátor  |jméno        |popisek                                   |
 |----------|-------------|------------------------------------------|
