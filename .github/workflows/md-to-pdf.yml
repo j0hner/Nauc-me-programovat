@@ -115,9 +115,10 @@ jobs:
             fi
       
             LAST_UPDATED=$(git log -1 --format="%cd" --date=format:'%d.%m.%Y %H:%M' -- "$mdfile")
-            
+            # escape & so sed doesn't misinterpret it
+            ESCAPED_LAST_UPDATED=$(printf '%s\n' "$LAST_UPDATED" | sed 's/[&/\]/\\&/g')
 
-            sed "s|\$LAST_UPDATED\$|$LAST_UPDATED|g" \
+            sed "s|\$LAST_UPDATED\$|$ESCAPED_LAST_UPDATED|g" \
                 "$GITHUB_WORKSPACE/.github/footer.html" \
                 > /tmp/pandoc/footer.html
 
