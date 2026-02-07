@@ -158,7 +158,7 @@ jobs:
           git checkout --orphan pdfs
       
           # wipe working tree
-          git rm -rf .
+          # git rm -rf .
       
           # --- restore artifacts ---
           mkdir -p pdfs hashes
