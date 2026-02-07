@@ -253,11 +253,3 @@ code span.co { color: #525252; font-style: italic; }
   margin: .5in;
   background: var(--bg-color);
 }
-
-/* @page {
-  @top-left {
-    content: "github.com/j0hner/Nauc-me-programovat";
-    color: hsl(216, 28%, 20%);
-    font-family: var(--font);
-  }
-} */
