@@ -120,6 +120,9 @@ jobs:
               "$GITHUB_WORKSPACE/.github/footer.html" \
               > /tmp/pandoc/footer.html
       
+            
+            echo $mdfile
+            
             pandoc "$mdfile" \
               -o "$pdf_out.html" \
               --standalone \
@@ -150,7 +153,7 @@ jobs:
           rm -rf /tmp/pdfs /tmp/hashes
           mkdir -p /tmp/pdfs /tmp/hashes
           
-          echo "$GITHUB_WORKSPACE/$PDF_FOLDER"
+          ls "$GITHUB_WORKSPACE/$PDF_FOLDER"
           cp -r "$GITHUB_WORKSPACE/$PDF_FOLDER" /tmp/pdfs/
           cp -r "$GITHUB_WORKSPACE/hashes" /tmp/hashes/
       
