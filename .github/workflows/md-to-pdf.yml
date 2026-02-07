@@ -122,7 +122,7 @@ jobs:
       
             
             echo $mdfile
-            
+
             pandoc "$mdfile" \
               -o "$pdf_out.html" \
               --standalone \
@@ -133,6 +133,8 @@ jobs:
             python -m weasyprint \
               "$pdf_out.html" \
               "$pdf_out"
+
+            echo  $pdf_put
       
             rm "$pdf_out.html"
             echo "$new_hash" > "$hash_out"
@@ -156,6 +158,9 @@ jobs:
           ls "$GITHUB_WORKSPACE/$PDF_FOLDER"
           cp -r "$GITHUB_WORKSPACE/$PDF_FOLDER" /tmp/pdfs/
           cp -r "$GITHUB_WORKSPACE/hashes" /tmp/hashes/
+
+          ls /tmp/pdfs/
+          ls /tmp/hashes/
       
           # --- switch to orphan branch ---
           git fetch origin
@@ -172,6 +177,8 @@ jobs:
           echo "# PDFs branch" > README.md
           echo "Automaticky generované PDF verze dokumentů z adresáře markdown." >> README.md
       
+          ls
+          
           git add pdfs hashes README.md
           git commit -m "Update PDFs"
       
